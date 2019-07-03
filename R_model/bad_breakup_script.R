@@ -17,7 +17,7 @@ options(scipen=10)
 # data needs to be normalized in some way because we will be operating across domains 
 # and likely with dramatically different values. Let's use a standardization approach so
 # we don't give undue influence to outliers but also gets responses in the same magnitude
-# something like x(standard)=(x-mean)/Stdev
+# something like x(standard)=(x-mean)/Stdev, the z score
 
 standardize<-function(data){
   #operate on the second column in data, where our response variable is
@@ -88,19 +88,25 @@ breakup(test1, 3)
 
 # now time to write the function that will iterate through our targetted windows
 # let's make a decision rule that our test data set must be greater than 10y in length
-# we can chose windows of 3, 4, 5, 6, 10, and actual study length
 # let's make this idiot-proof and build the standardize function right into this function
 # so we can literally run each properly prepared raw data set with a single line
 
 multiple_breakups<-function(data){
   data1<-standardize(data) #standardize data
-  out3<-breakup(data1, 3) #fit at each window length
-  out4<-breakup(data1, 4)
-  out5<-breakup(data1, 5)
-  out6<-breakup(data1, 6)
-  out10<-breakup(data1, 10)
+  count<-length(data1$year)
+  output<-data.frame(year=integer(0), #create empty data frame to put our output variables in
+                     length=integer(0), 
+                     years=integer(0),
+                     slope=numeric(0), 
+                     slope_se=numeric(0), 
+                     p_value=numeric(0))
+  for(i in 3:count){
+    outeach<-breakup(data1, i) #fit at each window length
+    output<-rbind(output, outeach)#bind it to the frame
+  }
+  
   outall<-linefit(data1) #fit a line to the complete data set too
-  out<-rbind(out3, out4, out5, out6, out10, outall)
+  out<-rbind(output, outall)
   return(out)
 }
 
@@ -108,23 +114,30 @@ multiple_breakups(test)
 #fan-flipping-tastic! it looks like that works
 
 
-#let's create some plotting functions
+#let's create a plotting function
 library(ggplot2)
 
-pyramid_plot<- function(data, window="Temporal window", significance=0.05){
+pyramid_plot<- function(data, window="", significance=0.05, plot_insig=TRUE){
+  count<-length(data$year)
   out<-multiple_breakups(data)
   out$significance<-ifelse(out$p_value<significance, "YES", "NO")
+  if(plot_insig==FALSE){
+    out<-out[which(out$p_value<significance),]
+  }
   plot<- ggplot(out) +
     theme_classic() +
     aes(y = slope, x = N_years,  ymin = (slope-slope_se), 
-        ymax = (slope+slope_se), shape=significance) +
+        ymax = (slope+slope_se), shape=significance, color=significance) +
     geom_pointrange()  +   ggtitle(window)+
+    scale_shape_manual(values=c("NO"=1,"YES"=19))+
+    scale_color_manual(values=c("NO"="red","YES"="black"))+
+    xlab("Number of years in window")+xlim(3, count)+
     geom_hline(yintercept = 0, linetype = 2) +
     coord_flip()
   return(plot)
 }
 
-
+pyramid_plot(test, window="test plot", plot_insig = TRUE, significance=0.1)
 
 #########################################################################################
 
