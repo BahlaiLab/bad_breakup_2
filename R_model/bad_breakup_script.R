@@ -144,20 +144,32 @@ pyramid_plot(test, window="test plot", plot_insig = TRUE, significance=0.1)
 #now that we have visualization, we need a way to pull relevant metrics out of the computation
 #so let's say our longest series is our 'truth', and we want to know how many years it takes 
 #to reach 'stability'-so let's define stability as >(some percentage of slopes) occuring within 
-#the SE of the slope of the longest series, for a given window length, allow user to change # of SEs
+#the standard deviation of the slope of the longest series, for a given window length, allow user to change # of SEs
 
-stability_time<-function(data, percentage=90, error_multiplyer=1){
+stability_time<-function(data, min_percent=95, error_multiplyer=1){
   test<-multiple_breakups(data)
   count<-nrow(test)
   true_slope<-test[count,4] #find the slope of the longest series
-  true_error<-(test[count,5])*error_multiplyer #find the error of the longest series
+  #remember to convert standard error to standard deviation
+  true_error<-(test[count,5])*(sqrt(test[count, 2]))*error_multiplyer #find the error of the longest series
   max_true<-true_slope+true_error #compute max and min values for slopes we are calling true
   min_true<-true_slope-true_error
   windows<-unique(test$N_years)#get a list of unique window lengths
+  stability<-max(windows) #start with the assumption that the longest window is the only stable one
   for(i in 1:length(windows)){#for each window length, compute proportion 'correct'
-    
+    window_length<-windows[i]
+    test_subset<-test[which(test$N_years==window_length),]
+    number_of_windows<-nrow(test_subset)#how many windows
+    correct_subset<-test_subset[which((test_subset$slope<max_true) & (test_subset$slope>min_true)),]
+    number_of_correct<-nrow(correct_subset)#how many windows give the right answer
+    percentage_correct<-100*number_of_correct/number_of_windows
+    if(percentage_correct > min_percent){
+      if(window_length < stability){
+        stability<-window_length
+      }
+    }
   }
-  return(true_slope)
+  return(stability)
 }
 
 #########################################################################################
