@@ -117,7 +117,7 @@ multiple_breakups(test)
 #let's create a plotting function
 library(ggplot2)
 
-pyramid_plot<- function(data, window="", significance=0.05, plot_insig=TRUE){
+pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE){
   count<-length(data$year)
   out<-multiple_breakups(data)
   out$significance<-ifelse(out$p_value<significance, "YES", "NO")
@@ -128,7 +128,8 @@ pyramid_plot<- function(data, window="", significance=0.05, plot_insig=TRUE){
     theme_classic() +
     aes(y = slope, x = N_years,  ymin = (slope-slope_se), 
         ymax = (slope+slope_se), shape=significance, color=significance) +
-    geom_pointrange()  +   ggtitle(window)+
+    geom_linerange(show.legend = F)+ 
+    geom_point(size=2)+ ggtitle(title)+
     scale_shape_manual(values=c("NO"=1,"YES"=19))+
     scale_color_manual(values=c("NO"="red","YES"="black"))+
     xlab("Number of years in window")+xlim(3, count)+
@@ -137,7 +138,7 @@ pyramid_plot<- function(data, window="", significance=0.05, plot_insig=TRUE){
   return(plot)
 }
 
-pyramid_plot(test, window="test plot", plot_insig = TRUE, significance=0.1)
+pyramid_plot(test, title="test plot", plot_insig = TRUE, significance=0.1)
 
 
 
@@ -171,6 +172,9 @@ stability_time<-function(data, min_percent=95, error_multiplyer=1){
   }
   return(stability)
 }
+
+#and a test
+stability_time(test, error_multiplyer = 1.5)
 
 #########################################################################################
 
