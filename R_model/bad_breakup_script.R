@@ -107,6 +107,25 @@ multiple_breakups<-function(data){
 multiple_breakups(test)
 #fan-flipping-tastic! it looks like that works
 
+
+#let's create some plotting functions
+library(ggplot2)
+
+pyramid_plot<- function(data, window="Temporal window", significance=0.05){
+  out<-multiple_breakups(data)
+  out$significance<-ifelse(out$p_value<significance, "YES", "NO")
+  plot<- ggplot(out) +
+    theme_classic() +
+    aes(y = slope, x = N_years,  ymin = (slope-slope_se), 
+        ymax = (slope+slope_se), shape=significance) +
+    geom_pointrange()  +   ggtitle(window)+
+    geom_hline(yintercept = 0, linetype = 2) +
+    coord_flip()
+  return(plot)
+}
+
+
+
 #########################################################################################
 
 #now, let's give this a try with some real data
