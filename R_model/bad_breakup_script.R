@@ -100,7 +100,7 @@ multiple_breakups<-function(data){
                      slope=numeric(0), 
                      slope_se=numeric(0), 
                      p_value=numeric(0))
-  for(i in 3:count){
+  for(i in 3:(count-1)){
     outeach<-breakup(data1, i) #fit at each window length
     output<-rbind(output, outeach)#bind it to the frame
   }
@@ -138,6 +138,27 @@ pyramid_plot<- function(data, window="", significance=0.05, plot_insig=TRUE){
 }
 
 pyramid_plot(test, window="test plot", plot_insig = TRUE, significance=0.1)
+
+
+
+#now that we have visualization, we need a way to pull relevant metrics out of the computation
+#so let's say our longest series is our 'truth', and we want to know how many years it takes 
+#to reach 'stability'-so let's define stability as >(some percentage of slopes) occuring within 
+#the SE of the slope of the longest series, for a given window length, allow user to change # of SEs
+
+stability_time<-function(data, percentage=90, error_multiplyer=1){
+  test<-multiple_breakups(data)
+  count<-nrow(test)
+  true_slope<-test[count,4] #find the slope of the longest series
+  true_error<-(test[count,5])*error_multiplyer #find the error of the longest series
+  max_true<-true_slope+true_error #compute max and min values for slopes we are calling true
+  min_true<-true_slope-true_error
+  windows<-unique(test$N_years)#get a list of unique window lengths
+  for(i in 1:length(windows)){#for each window length, compute proportion 'correct'
+    
+  }
+  return(true_slope)
+}
 
 #########################################################################################
 
