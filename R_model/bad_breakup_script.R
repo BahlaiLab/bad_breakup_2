@@ -43,7 +43,9 @@ linefit<-function (data){
             length(unique(data$year)), #number of years the analysis includes
             summary(model)$coefficients[2,1], # slope
             summary(model)$coefficients[2,2], # se for slope
-            summary(model)$coefficients[2,4]) #p value
+            summary(model)$coefficients[2,4], #p value
+            summary(model)$r.squared, #r-squared
+            summary(model)$adj.r.squared) #adjusted r-squared
   return(output)
 }
 
@@ -64,7 +66,9 @@ breakup<-function(data, window){ #window is the size of the window we want to us
                      years=integer(0),
                      slope=numeric(0), 
                      slope_se=numeric(0), 
-                     p_value=numeric(0))
+                     p_value=numeric(0),
+                     r_square=numeric(0),
+                     adj_r_square=numeric(0))
   numyears<-length(unique(data$year))
   while (numyears>(window-1)){ #while there's still more years of data than in the window
     chunk<-subset(remaining, year<(min(year)+window)) #pull out a chunk as big as the window from the top of the data
@@ -79,7 +83,8 @@ breakup<-function(data, window){ #window is the size of the window we want to us
     remaining<-subset(remaining, year>min(year)) #cut out the first year of the remaining data + repeat
     numyears<-length(unique(remaining$year))
   }
-  names(output)<-c("start_year", "N_data", "N_years", "slope", "slope_se", "p_value")
+  names(output)<-c("start_year", "N_data", "N_years", "slope", "slope_se", "p_value",
+                   "r_square", "adj_r_square")
   return(output)#output the data frame
 }
 
@@ -99,7 +104,9 @@ multiple_breakups<-function(data){
                      years=integer(0),
                      slope=numeric(0), 
                      slope_se=numeric(0), 
-                     p_value=numeric(0))
+                     p_value=numeric(0),
+                     r_square=numeric(0),
+                     adj_r_square=numeric(0))
   for(i in 3:(count-1)){
     outeach<-breakup(data1, i) #fit at each window length
     output<-rbind(output, outeach)#bind it to the frame
@@ -110,7 +117,7 @@ multiple_breakups<-function(data){
   return(out)
 }
 
-multiple_breakups(test)
+test2<-multiple_breakups(test)
 #fan-flipping-tastic! it looks like that works
 
 
@@ -147,7 +154,7 @@ pyramid_plot(test, title="test plot", plot_insig = TRUE, significance=0.1)
 #to reach 'stability'-so let's define stability as >(some percentage of slopes) occuring within 
 #the standard deviation of the slope of the longest series, for a given window length, allow user to change # of SEs
 
-stability_time<-function(data, min_percent=95, error_multiplyer=1){
+stability_time<-function(data, min_percent=95, error_multiplyer=1){#returns a number 
   test<-multiple_breakups(data)
   count<-nrow(test)
   true_slope<-test[count,4] #find the slope of the longest series
@@ -175,6 +182,10 @@ stability_time<-function(data, min_percent=95, error_multiplyer=1){
 
 #and a test
 stability_time(test, error_multiplyer = 1.5)
+
+abs_range<- function(data){#returns a two unit vector with the max and min slopes
+  test<-multiple_breakups(data)
+}
 
 #########################################################################################
 
