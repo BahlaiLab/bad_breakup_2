@@ -154,7 +154,7 @@ pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_
         ymax = (slope+slope_se), shape=significance, color=significance) +
     geom_linerange(show.legend = F)+ 
     geom_point(size=point_scale)+ ggtitle(title)+
-    scale_shape_manual(values=c("NO"=1,"YES"=yespt))+
+    scale_shape_manual(values=c("NO"=4,"YES"=yespt))+
     scale_color_manual(values=c("NO"="red","YES"="black"))+
     xlab("Number of years in window")+xlim(3, years)+
     coord_flip()
