@@ -125,8 +125,15 @@ test2<-multiple_breakups(test)
 library(ggplot2)
 
 pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_points=FALSE){
-  count<-length(data$year)
+  years<-length(unique(data$year))
   out<-multiple_breakups(data)
+  count<-nrow(out)
+  #compute mean and sd of longest series for vertical lines
+  true_slope<-out[count,4] #find the slope of the longest series
+  #remember to convert standard error to standard deviation
+  true_error<-(out[count,5])*(sqrt(out[count, 2]))#find the error of the longest series
+  max_true<-true_slope+true_error #compute max and min values for slopes we are calling true
+  min_true<-true_slope-true_error
   out$significance<-ifelse(out$p_value<significance, "YES", "NO")
   if(rsq_points==TRUE){
     point_scale<-10*out$r_square
@@ -140,14 +147,16 @@ pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_
   }
   plot<- ggplot(out) +
     theme_classic() +
+    geom_hline(yintercept = true_slope, linetype = 2) +
+    geom_hline(yintercept = max_true, linetype = 3, color="grey") +
+    geom_hline(yintercept = min_true, linetype = 3, color="grey") +
     aes(y = slope, x = N_years,  ymin = (slope-slope_se), 
         ymax = (slope+slope_se), shape=significance, color=significance) +
     geom_linerange(show.legend = F)+ 
     geom_point(size=point_scale)+ ggtitle(title)+
     scale_shape_manual(values=c("NO"=1,"YES"=yespt))+
     scale_color_manual(values=c("NO"="red","YES"="black"))+
-    xlab("Number of years in window")+xlim(3, count)+
-    geom_hline(yintercept = 0, linetype = 2) +
+    xlab("Number of years in window")+xlim(3, years)+
     coord_flip()
   return(plot)
 }
