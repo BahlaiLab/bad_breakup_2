@@ -199,9 +199,25 @@ stability_time<-function(data, min_percent=95, error_multiplyer=1){#returns a nu
 #and a test
 stability_time(test, error_multiplyer = 1.5)
 
-abs_range<- function(data){#returns a two unit vector with the max and min slopes
+#now a function that finds the absoloute range of findings, and the absolute 
+#range of significant findings
+
+abs_range<- function(data, only_significant=FALSE, significance=0.05){#returns a two unit vector with the max and min slopes
   test<-multiple_breakups(data)
+  if(only_significant== TRUE){ #if user specifies only significant values wanted, pull those
+    test1<-test[which(test$p_value<significance),]
+  }else{
+    test1<-test
+  }
+  max_slope<-max(test1$slope)
+  min_slope<-min(test1$slope)
+  sloperange<-c(min_slope, max_slope)
+  return(sloperange)
+  
 }
+
+#and try it out
+abs_range(test, only_significant = TRUE, significance = 0.5)
 
 #########################################################################################
 
