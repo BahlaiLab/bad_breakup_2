@@ -212,12 +212,13 @@ abs_range<- function(data, only_significant=FALSE, significance=0.05){#returns a
   max_slope<-max(test1$slope)
   min_slope<-min(test1$slope)
   sloperange<-c(min_slope, max_slope)
-  return(test1)
+  return(sloperange)
   
 }
 
 #and try it out
-abs_range(test, only_significant = FALSE, significance = 0.5)
+abs_range(test, only_significant = FALSE, significance = 0.05)
+
 
 #########################################################################################
 
