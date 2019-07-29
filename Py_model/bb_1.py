@@ -2,3 +2,4 @@
 
 We are testing for the likelihood of type 2 errors produced by studies of various lengths.
 """
+import pandas as pd
