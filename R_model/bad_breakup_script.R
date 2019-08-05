@@ -219,6 +219,26 @@ abs_range<- function(data, only_significant=FALSE, significance=0.05){#returns a
 #and try it out
 abs_range(test, only_significant = FALSE, significance = 0.05)
 
+#now we want to find the absolute over and under estimate compared to the slope of the 
+#longest series
+
+relative_range<- function(data, only_significant=FALSE, significance=0.05){#returns a two unit vector with the max and min slopes
+  test<-multiple_breakups(data)
+  count<-nrow(test)
+  true_slope<-test[count,4] #find the slope of the longest series
+  if(only_significant== TRUE){ #if user specifies only significant values wanted, pull those
+    test1<-test[which(test$p_value<significance),]
+  }else{
+    test1<-test
+  }
+  max_slope<-max(test1$slope)-true_slope
+  min_slope<-min(test1$slope)-true_slope
+  sloperange<-c(min_slope, max_slope)
+  return(sloperange)
+  
+}
+
+relative_range(test, only_significant = FALSE, significance = 0.05)
 
 #########################################################################################
 
