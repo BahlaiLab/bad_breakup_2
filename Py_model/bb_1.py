@@ -6,15 +6,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
 
-#test = pd.read_csv('github/test.csv') #Need to find correct file-path
+test = pd.read_csv('test.csv') #Need to find correct file-path
 
 #trying to make my own test dataset since I can't find Dr. Bahlai's
-np.random.seed(12345678)
-x = np.random.random(10)
-np.random.seed(12645678)
-y = np.random.random(10)
-myTestData = [x,y]
-myTest = pd.Dataframe(myTestData, columns = ['yr', 'resp'])
+#np.random.seed(12345678)
+#x = np.random.random(10)
+#np.random.seed(12645678)
+#y = np.random.random(10)
+#myTestData = [x,y]
+#myTest = pd.Dataframe(myTestData, columns = ['yr', 'resp'])
 
 def standardize(data):
     pd.data.columns("year", "response")
@@ -36,4 +36,4 @@ print(test1)
     #ser = pd.Series(output)
     #return output
 
-#print(linefit(test1)) 
+#print(linefit(test1))
