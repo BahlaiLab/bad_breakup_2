@@ -125,8 +125,8 @@ test2<-multiple_breakups(test)
 library(ggplot2)
 
 pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_points=FALSE){
-  years<-length(unique(data$year))
   out<-multiple_breakups(data)
+  years<-length(unique(out$start_year))
   count<-nrow(out)
   #compute mean and sd of longest series for vertical lines
   true_slope<-out[count,4] #find the slope of the longest series
