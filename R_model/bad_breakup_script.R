@@ -7,7 +7,7 @@
 
 #assume data is coming in in the form year, response variable
 #use this test data set to build stuff
-test<-read.csv(file="test.csv", header=TRUE)
+test<-read.csv(file="https://raw.githubusercontent.com/BahlaiLab/bad_breakup_2/master/R_model/test.csv", header=TRUE)
 
 # set it so we get our decimal places rather than sci notation in our outputs
 options(scipen=10)
@@ -239,4 +239,9 @@ relative_range<- function(data, only_significant=FALSE, significance=0.05){#retu
 }
 
 relative_range(test, only_significant = FALSE, significance = 0.05)
+
+#proportion significant
+#proportion significantly wrong
+#proportion right by series length
+
 
