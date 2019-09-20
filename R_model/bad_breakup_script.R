@@ -282,8 +282,9 @@ proportion_wrong(test, significance=0.01)
 
 
 
-#proportion wrong by series length- bsically the same thing as proportion wrong but looped 
-#over all the unique window lengths
+#proportion wrong by series length- basically the same thing as proportion wrong but looped 
+#over all the unique window lengths. Will output a data frame with a window length and proportion
+#of outputs are significantly misleading
 
 proportion_wrong_series<- function(data, significance=0.05){#returns a single value between 0 and 1
   test<-multiple_breakups(data)
@@ -291,22 +292,36 @@ proportion_wrong_series<- function(data, significance=0.05){#returns a single va
   true_slope<-test[count,4] #find the slope of the longest series
   true_p<-test[count,6]
   windows<-unique(test$N_years)#get a list of unique window lengths
-  
-  
-  #case 1: true slope is not significant
-  if (true_p>significance){
-    wrong_windows<-test[which(test$p_value<significance),]
-  }else{ #true slope is significant
-    if(true_slope>0){#true slope is positive
-      wrong_windows<test[which(test$slope<0|test$p_value>significance),]#wrong means the slope is the wrong sign or 0
-    }else{#true slope is negative
-      wrong_windows<test[which(test$slope>0|test$p_value>significance),]#wrong means the slope is the wrong sign or 0
+  prop.vec<-c()#create a blank vector to store proportions in
+  for(i in 1:length(windows)){#for each window length, compute proportion 'wrong'
+    window_length<-windows[i]
+    test_subset<-test[which(test$N_years==window_length),]
+    number_of_windows<-nrow(test_subset)#how many windows
+    #case 1: true slope is not significant
+    if (true_p>significance){
+      wrong_windows<-test_subset[which(test_subset$p_value<significance),]
+    }else{ #true slope is significant
+      if(true_slope>0){#true slope is positive
+        wrong_windows<test_subset[which(test_subset$slope<0|test_subset$p_value>significance),]#wrong means the slope is the wrong sign or 0
+      }else{#true slope is negative
+        wrong_windows<test_subset[which(test_subset$slope>0|test_subset$p_value>significance),]#wrong means the slope is the wrong sign or 0
+      }
     }
+    count_wrong<-nrow(wrong_windows)
+    proportion<-count_wrong/number_of_windows
+    prop.vec<-c(prop.vec, proportion)
   }
-  count_wrong<-nrow(wrong_windows)
-  proportion<-count_wrong/count
-  return(proportion)
+  
+  x_name <- "window_length"
+  y_name <- "proportion_wrong"
+  
+  df <- data.frame(windows,prop.vec)
+  names(df) <- c(x_name,y_name)
+  return(df)
   
 }
 
+
+#test it
+proportion_wrong_series(test, significance = 0.1)
 
