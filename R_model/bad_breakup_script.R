@@ -241,6 +241,18 @@ relative_range<- function(data, only_significant=FALSE, significance=0.05){#retu
 relative_range(test, only_significant = FALSE, significance = 0.05)
 
 #proportion significant
+
+proportion_significant<- function(data, significance=0.05){#returns a single value between 0 and 1
+  test<-multiple_breakups(data)
+  count<-nrow(test)
+  significant_regressions<-test[which(test$p_value<significance),]
+  count_sig<-nrow(significant_regressions)
+  proportion<-count_sig/count
+  return(proportion)
+  
+}
+
+proportion_significant(test, significance=0.01)
 #proportion significantly wrong
 #proportion right by series length
 
