@@ -240,7 +240,7 @@ relative_range<- function(data, only_significant=FALSE, significance=0.05){#retu
 
 relative_range(test, only_significant = FALSE, significance = 0.05)
 
-#proportion significant
+#proportion significant- finds the proportion of total windows with statistically significant values
 
 proportion_significant<- function(data, significance=0.05){#returns a single value between 0 and 1
   test<-multiple_breakups(data)
@@ -252,8 +252,61 @@ proportion_significant<- function(data, significance=0.05){#returns a single val
   
 }
 
-proportion_significant(test, significance=0.01)
-#proportion significantly wrong
-#proportion right by series length
+proportion_significant(test, significance=0.05)
+
+#proportion significantly wrong- we're going to define this as 'directionally wrong'
+#where there is a significant relationship that does not match the direction of the true slope
+
+proportion_wrong<- function(data, significance=0.05){#returns a single value between 0 and 1
+  test<-multiple_breakups(data)
+  count<-nrow(test)
+  true_slope<-test[count,4] #find the slope of the longest series
+  true_p<-test[count,6]
+  #case 1: true slope is not significant
+  if (true_p>significance){
+    wrong_windows<-test[which(test$p_value<significance),]
+  }else{ #true slope is significant
+    if(true_slope>0){#true slope is positive
+      wrong_windows<test[which(test$slope<0|test$p_value>significance),]#wrong means the slope is the wrong sign or 0
+    }else{#true slope is negative
+      wrong_windows<test[which(test$slope>0|test$p_value>significance),]#wrong means the slope is the wrong sign or 0
+    }
+  }
+  count_wrong<-nrow(wrong_windows)
+  proportion<-count_wrong/count
+  return(proportion)
+  
+}
+
+proportion_wrong(test, significance=0.01)
+
+
+
+#proportion wrong by series length- bsically the same thing as proportion wrong but looped 
+#over all the unique window lengths
+
+proportion_wrong_series<- function(data, significance=0.05){#returns a single value between 0 and 1
+  test<-multiple_breakups(data)
+  count<-nrow(test)
+  true_slope<-test[count,4] #find the slope of the longest series
+  true_p<-test[count,6]
+  windows<-unique(test$N_years)#get a list of unique window lengths
+  
+  
+  #case 1: true slope is not significant
+  if (true_p>significance){
+    wrong_windows<-test[which(test$p_value<significance),]
+  }else{ #true slope is significant
+    if(true_slope>0){#true slope is positive
+      wrong_windows<test[which(test$slope<0|test$p_value>significance),]#wrong means the slope is the wrong sign or 0
+    }else{#true slope is negative
+      wrong_windows<test[which(test$slope>0|test$p_value>significance),]#wrong means the slope is the wrong sign or 0
+    }
+  }
+  count_wrong<-nrow(wrong_windows)
+  proportion<-count_wrong/count
+  return(proportion)
+  
+}
 
 
