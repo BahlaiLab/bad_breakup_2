@@ -161,7 +161,7 @@ pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_
   return(plot)
 }
 
-pyramid_plot(test, title="test plot", plot_insig = TRUE, significance=0.1, rsq_points =TRUE)
+pyramid_plot(test, title="test plot", plot_insig = TRUE, significance=0.05, rsq_points =TRUE)
 
 
 
