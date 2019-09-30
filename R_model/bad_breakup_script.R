@@ -127,6 +127,7 @@ library(ggplot2)
 pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_points=FALSE){
   out<-multiple_breakups(data)
   years<-length(unique(out$start_year))
+  maxyears<-max(out$N_years)
   count<-nrow(out)
   #compute mean and sd of longest series for vertical lines
   true_slope<-out[count,4] #find the slope of the longest series
@@ -156,7 +157,7 @@ pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_
     geom_point(size=point_scale)+ ggtitle(title)+
     scale_shape_manual(values=c("NO"=4,"YES"=yespt))+
     scale_color_manual(values=c("NO"="red","YES"="black"))+
-    xlab("Number of years in window")+xlim(3, years)+
+    xlab("Number of years in window")+xlim(3, maxyears)+
     coord_flip()
   return(plot)
 }
