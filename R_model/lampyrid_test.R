@@ -74,4 +74,15 @@ multiple_breakups(lampyrid_alfalfa)
 # there are some perculiarities because 2007 is missing, but I think we're working now.
 # try it with other data too
 multiple_breakups(lampyrid_notill)
+pyramid_plot(lampyrid_notill, rsq_points=TRUE)
+stability_time(lampyrid_notill)
+relative_range(lampyrid_notill)
+proportion_wrong(lampyrid_notill)
+
+wrongness<-proportion_wrong_series(lampyrid_notill)
+plot(wrongness$window_length,wrongness$proportion_wrong, xlab="Window length", 
+     ylab="Proportion wrong", pch=19)
+lines(lowess(wrongness$window_length,wrongness$proportion_wrong), col="blue")
+points(wrongness$window_length,wrongness$avg_r_square, pch=17, col="orange")
+lines(lowess(wrongness$window_length,wrongness$avg_r_square), col="red")
 

@@ -158,8 +158,7 @@ pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_
     scale_shape_manual(values=c("NO"=4,"YES"=yespt))+
     scale_color_manual(values=c("NO"="red","YES"="black"))+
     xlab("Number of years in window")+
-    scale_x_continuous(
-      labels = scales::number_format(accuracy = 2), lim=c(3, maxyears))+
+    scale_x_continuous(lim=c(3, maxyears))+
     coord_flip()
   return(plot)
 }
@@ -287,7 +286,7 @@ proportion_wrong(test, significance=0.01)
 
 #proportion wrong by series length- basically the same thing as proportion wrong but looped 
 #over all the unique window lengths. Will output a data frame with a window length and proportion
-#of outputs are significantly misleading
+#of outputs are significantly misleading, plus average r square for that window length
 
 proportion_wrong_series<- function(data, significance=0.05){#returns a single value between 0 and 1
   test<-multiple_breakups(data)
@@ -296,6 +295,7 @@ proportion_wrong_series<- function(data, significance=0.05){#returns a single va
   true_p<-test[count,6]
   windows<-unique(test$N_years)#get a list of unique window lengths
   prop.vec<-c()#create a blank vector to store proportions in
+  r.vec<-c()#create vector for storing average rsquare values in
   for(i in 1:length(windows)){#for each window length, compute proportion 'wrong'
     window_length<-windows[i]
     test_subset<-test[which(test$N_years==window_length),]
@@ -313,13 +313,16 @@ proportion_wrong_series<- function(data, significance=0.05){#returns a single va
     count_wrong<-nrow(wrong_windows)
     proportion<-count_wrong/number_of_windows
     prop.vec<-c(prop.vec, proportion)
+    avg.confidence<-mean(test_subset$r_square)
+    r.vec<-c(r.vec, avg.confidence)
   }
   
   x_name <- "window_length"
   y_name <- "proportion_wrong"
+  z_name <- "avg_r_square"
   
-  df <- data.frame(windows,prop.vec)
-  names(df) <- c(x_name,y_name)
+  df <- data.frame(windows, prop.vec, r.vec)
+  names(df) <- c(x_name, y_name, z_name)
   return(df)
   
 }
