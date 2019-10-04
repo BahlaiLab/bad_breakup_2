@@ -124,12 +124,10 @@ test2<-multiple_breakups(test)
 #let's create a plotting function
 library(ggplot2)
 
-pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_points=FALSE, caption_plot=""){
-  #suggested change
-  colnames(data) <- c("year", "abundance")
-  ################
-  years<-length(unique(data$year))
+pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_points=FALSE){
   out<-multiple_breakups(data)
+  years<-length(unique(out$start_year))
+  maxyears<-max(out$N_years)
   count<-nrow(out)
   #compute mean and sd of longest series for vertical lines
   true_slope<-out[count,4] #find the slope of the longest series
@@ -159,20 +157,13 @@ pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_
     geom_point(size=point_scale)+ ggtitle(title)+
     scale_shape_manual(values=c("NO"=4,"YES"=yespt))+
     scale_color_manual(values=c("NO"="red","YES"="black"))+
-    xlab("Number of years in window")+xlim(3, years)+
-    labs(caption = caption_plot)+
-    theme(plot.title = element_text(size=22))+
-    theme(axis.title.x = element_text(size=17, face = "bold"))+
-    theme(axis.title.y = element_text(size=17, face = "bold"))+
-    theme(axis.text = element_text(size=14))+
-    theme(legend.text = element_text(size = 12))+
-    theme(legend.title = element_text(size = 14))+
-    theme(plot.caption = element_text(size = 14,hjust = 0.5,margin = margin(7,0,0,0,unit = "pt")))+
+    xlab("Number of years in window")+
+    scale_x_continuous(lim=c(3, maxyears))+
     coord_flip()
   return(plot)
 }
 
-pyramid_plot(test, title="test plot", plot_insig = TRUE, significance=0.05, rsq_points =TRUE, caption_plot = "hey")
+pyramid_plot(test, title="test plot", plot_insig = TRUE, significance=0.05, rsq_points =TRUE)
 
 
 
@@ -339,4 +330,3 @@ proportion_wrong_series<- function(data, significance=0.05){#returns a single va
 
 #test it
 proportion_wrong_series(test, significance = 0.1)
-
