@@ -269,9 +269,9 @@ proportion_wrong<- function(data, significance=0.05){#returns a single value bet
     wrong_windows<-test[which(test$p_value<significance),]
   }else{ #true slope is significant
     if(true_slope>0){#true slope is positive
-      wrong_windows<test[which(test$slope<0|test$p_value>significance),]#wrong means the slope is the wrong sign or 0
+      wrong_windows<-test[which(test$slope<0|test$p_value>significance),]#wrong means the slope is the wrong sign or 0
     }else{#true slope is negative
-      wrong_windows<test[which(test$slope>0|test$p_value>significance),]#wrong means the slope is the wrong sign or 0
+      wrong_windows<-test[which(test$slope>0|test$p_value>significance),]#wrong means the slope is the wrong sign or 0
     }
   }
   count_wrong<-nrow(wrong_windows)
@@ -305,9 +305,9 @@ proportion_wrong_series<- function(data, significance=0.05){#returns a single va
       wrong_windows<-test_subset[which(test_subset$p_value<significance),]
     }else{ #true slope is significant
       if(true_slope>0){#true slope is positive
-        wrong_windows<test_subset[which(test_subset$slope<0|test_subset$p_value>significance),]#wrong means the slope is the wrong sign or 0
+        wrong_windows<-test_subset[which(test_subset$slope<0|test_subset$p_value>significance),]#wrong means the slope is the wrong sign or 0
       }else{#true slope is negative
-        wrong_windows<test_subset[which(test_subset$slope>0|test_subset$p_value>significance),]#wrong means the slope is the wrong sign or 0
+        wrong_windows<-test_subset[which(test_subset$slope>0|test_subset$p_value>significance),]#wrong means the slope is the wrong sign or 0
       }
     }
     count_wrong<-nrow(wrong_windows)
