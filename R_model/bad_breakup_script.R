@@ -259,6 +259,7 @@ proportion_significant(test, significance=0.05)
 #proportion significantly wrong- we're going to define this as 'directionally wrong'
 #where there is a significant relationship that does not match the direction of the true slope
 
+
 proportion_wrong<- function(data, significance=0.05){#returns a single value between 0 and 1
   test<-multiple_breakups(data)
   count<-nrow(test)
@@ -330,3 +331,35 @@ proportion_wrong_series<- function(data, significance=0.05){#returns a single va
 
 #test it
 proportion_wrong_series(test, significance = 0.1)
+
+#proportion significantly wrong under stability time- we're going to define this as 'directionally wrong'
+#where there is a significant relationship that does not match the direction of the true slope
+
+proportion_wrong_before_stability<- function(data, significance=0.05, min_percent=95, error_multiplyer=1){#returns a single value between 0 and 1
+  
+  test<-multiple_breakups(data)
+  count<-nrow(test)
+  true_slope<-test[count,4] #find the slope of the longest series
+  true_p<-test[count,6]
+  
+  #cut out data below threshold
+  threshold<-stability_time(data, min_percent, error_multiplyer)#find stability threshold
+  test1<-test[which(test$N_years<threshold),]
+  count1<-nrow(test1)
+  #case 1: true slope is not significant
+  if (true_p>significance){
+    wrong_windows<-test1[which(test1$p_value<significance),]
+  }else{ #true slope is significant
+    if(true_slope>0){#true slope is positive
+      wrong_windows<-test1[which(test1$slope<0|test1$p_value>significance),]#wrong means the slope is the wrong sign or 0
+    }else{#true slope is negative
+      wrong_windows<-test1[which(test1$slope>0|test1$p_value>significance),]#wrong means the slope is the wrong sign or 0
+    }
+  }
+  count_wrong<-nrow(wrong_windows)
+  proportion<-count_wrong/count1
+  return(proportion)
+  
+}
+
+proportion_wrong_before_stability(test, significance=0.05)

@@ -78,6 +78,7 @@ pyramid_plot(lampyrid_notill, rsq_points=TRUE)
 stability_time(lampyrid_notill)
 relative_range(lampyrid_notill)
 proportion_wrong(lampyrid_notill)
+proportion_wrong_before_stability(lampyrid_notill)
 
 wrongness<-proportion_wrong_series(lampyrid_notill)
 plot(wrongness$window_length,wrongness$proportion_wrong, xlab="Window length", 
