@@ -363,3 +363,37 @@ proportion_wrong_before_stability<- function(data, significance=0.05, min_percen
 }
 
 proportion_wrong_before_stability(test, significance=0.05)
+
+#implement another charting function that gives the proportion wrong by window length
+
+wrongness_plot<-function(data, significance=0.05, min_percent=95, error_multiplyer=1, title =""){
+  threshold<-stability_time(data, min_percent, error_multiplyer)#find stability threshold
+  wrongness<-proportion_wrong_series(data, significance)
+  maxyears<-max(wrongness$window_length)
+  plot<- ggplot(wrongness) +
+    theme_classic() +
+    geom_vline(xintercept = (threshold-0.1), linetype = 3, color="grey") +
+    geom_smooth(aes(y = proportion_wrong, x = window_length, 
+                    linetype="Propwrong", color="Propwrong"), se=FALSE)+
+    geom_point(aes(y = proportion_wrong, x = window_length, 
+                   shape="Propwrong", fill="Propwrong"))+
+    geom_smooth(aes(y = avg_r_square, x = window_length, 
+                    linetype="rsq", color="rsq"), se=FALSE)+
+    geom_point(aes(y = avg_r_square, x = window_length, 
+                   shape="rsq", fill="rsq"))+
+    scale_fill_manual(name="", values=c(Propwrong="black",rsq="orange"),
+                      labels=c("Proportion wrong", expression("Average R"^2)))+
+    scale_shape_manual(name="", values=c(Propwrong=21, rsq=24), 
+                       labels=c("Proportion wrong", expression("Average R"^2)))+
+    scale_linetype_manual(name="", values=c(Propwrong=1, rsq=2), 
+                          labels=c("Proportion wrong", expression("Average R"^2)))+
+    scale_color_manual(name="", values=c(Propwrong="blue", rsq="red"), 
+                       labels=c("Proportion wrong", expression("Average R"^2)))+
+    ggtitle(title)+
+    xlab("Number of years in window")+
+    ylab("Average value")
+  return(plot)
+}
+
+
+
