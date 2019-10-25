@@ -396,5 +396,43 @@ wrongness_plot<-function(data, significance=0.05, min_percent=95, error_multiply
   return(plot)
 }
 
+broken_stick_plot<-function(data, title="", significance=0.05, plot_insig=TRUE, window_length=3){
+  out<-multiple_breakups(data)
+  years<-length(unique(out$start_year))
+  maxyears<-max(out$N_years)
+  count<-nrow(out)
+  #compute mean of longest series
+  true_slope<-out[count,4] #find the slope of the longest series
+  #remember to convert standard error to standard deviation
+  true_error<-(out[count,5])*(sqrt(out[count, 2]))#find the error of the longest series
+  max_true<-true_slope+true_error #compute max and min values for slopes we are calling true
+  min_true<-true_slope-true_error
+  out$significance<-ifelse(out$p_value<significance, "YES", "NO")
+  if(rsq_points==TRUE){
+    point_scale<-10*out$r_square
+    yespt<-1
+  }else{
+    point_scale<-2
+    yespt<-16
+  }
+  if(plot_insig==FALSE){
+    out<-out[which(out$p_value<significance),]
+  }
+  plot<- ggplot(out) +
+    theme_classic() +
+    geom_hline(yintercept = true_slope, linetype = 2) +
+    geom_hline(yintercept = max_true, linetype = 3, color="grey") +
+    geom_hline(yintercept = min_true, linetype = 3, color="grey") +
+    aes(y = slope, x = N_years,  ymin = (slope-slope_se), 
+        ymax = (slope+slope_se), shape=significance, color=significance) +
+    geom_linerange(show.legend = F)+ 
+    geom_point(size=point_scale)+ ggtitle(title)+
+    scale_shape_manual(values=c("NO"=4,"YES"=yespt))+
+    scale_color_manual(values=c("NO"="red","YES"="black"))+
+    xlab("Number of years in window")+
+    scale_x_continuous(lim=c(3, maxyears))+
+    coord_flip()
+  return(plot)
+}
 
 
