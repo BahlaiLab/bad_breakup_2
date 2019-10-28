@@ -419,25 +419,27 @@ broken_stick_plot<-function(data, title="", significance=0.05, plot_insig=TRUE, 
   #compute mean of longest series
   true_slope<-out[count,4] #find the slope of the longest series
   true_intercept<-(out[count,7]) #find the intercept of the longest series
-  out$significance<-ifelse(out$p_value<significance, "YES", "NO")#classify by statistical significance
   out<-out[which(out$N_years==window_length),] #only work with one window length per plot
   if(plot_insig==FALSE){
     out<-out[which(out$p_value<significance),]
   }
   countset<-nrow(out)#count the number of rows in the set we want to plot
   plot<- ggplot(data1, aes(x=year, y=stand.response)) +
-    theme_classic()+geom_line(linetype=3, colour="darkgrey")
+    theme_classic()+geom_smooth(linetype=0, fill="lightblue1", method=lm, formula='y ~ x', 
+                                level=0.99)#99% confidence interval around longest series
   for(i in 1:countset){
     slopei<-out$slope[i]
     intercepti<-out$intercept[i]
     plot<-plot+geom_abline(slope=slopei, intercept=intercepti, linetype=2, colour="red")
   }
   plot<-plot+ ggtitle(title)+
-    geom_abline(slope=true_slope, intercept=true_intercept, linetype=1, colour="black")+
-    geom_point(size=3, pch=21, fill="darkgrey")+
+    geom_abline(slope=true_slope, intercept=true_intercept, linetype=1, colour="grey16", size=1)+
+    geom_point(size=3, pch=21, fill="grey22")+
     xlab("Year")+ylab("Z-scaled response")
   return(plot)
 }
 #test it
-broken_stick_plot(test, window_length = 4)
+broken_stick_plot(test, window_length = 5)
+
+
 
