@@ -441,5 +441,20 @@ broken_stick_plot<-function(data, title="", significance=0.05, plot_insig=TRUE, 
 #test it
 broken_stick_plot(test, window_length = 5)
 
+#let's have a bit of fun and make an animated version of this plot
+library(animation)
 
+
+make_stick_pile_gif<-function(data){
+  out<-multiple_breakups(data)
+  windows<-unique(out$N_years)#get a list of unique window lengths
+  saveGIF({
+    for (i in 1:length(windows)) {
+      window_length_i<-windows[i]
+      print(broken_stick_plot(test, window_length = window_length_i, 
+                              title=paste("Window length =", window_length_i)))
+    }
+  }) 
+}
+make_stick_pile_gif(test)
 
