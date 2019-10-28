@@ -411,6 +411,7 @@ wrongness_plot(test)
 #now for a function that plots all the lines by window length
 
 broken_stick_plot<-function(data, title="", significance=0.05, plot_insig=TRUE, window_length=3){
+  data1<-standardize(data)#standardize data for data frame
   out<-multiple_breakups(data)
   years<-length(unique(out$start_year))
   maxyears<-max(out$N_years)
@@ -418,33 +419,25 @@ broken_stick_plot<-function(data, title="", significance=0.05, plot_insig=TRUE, 
   #compute mean of longest series
   true_slope<-out[count,4] #find the slope of the longest series
   true_intercept<-(out[count,7]) #find the intercept of the longest series
-
-  out$significance<-ifelse(out$p_value<significance, "YES", "NO")
-  if(rsq_points==TRUE){
-    point_scale<-10*out$r_square
-    yespt<-1
-  }else{
-    point_scale<-2
-    yespt<-16
-  }
+  out$significance<-ifelse(out$p_value<significance, "YES", "NO")#classify by statistical significance
+  out<-out[which(out$N_years==window_length),] #only work with one window length per plot
   if(plot_insig==FALSE){
     out<-out[which(out$p_value<significance),]
   }
-  plot<- ggplot(out) +
-    theme_classic() +
-    geom_hline(yintercept = true_slope, linetype = 2) +
-    geom_hline(yintercept = max_true, linetype = 3, color="grey") +
-    geom_hline(yintercept = min_true, linetype = 3, color="grey") +
-    aes(y = slope, x = N_years,  ymin = (slope-slope_se), 
-        ymax = (slope+slope_se), shape=significance, color=significance) +
-    geom_linerange(show.legend = F)+ 
-    geom_point(size=point_scale)+ ggtitle(title)+
-    scale_shape_manual(values=c("NO"=4,"YES"=yespt))+
-    scale_color_manual(values=c("NO"="red","YES"="black"))+
-    xlab("Number of years in window")+
-    scale_x_continuous(lim=c(3, maxyears))+
-    coord_flip()
+  countset<-nrow(out)#count the number of rows in the set we want to plot
+  plot<- ggplot(data1, aes(x=year, y=stand.response)) +
+    theme_classic()+geom_line(linetype=3, colour="darkgrey")
+  for(i in 1:countset){
+    slopei<-out$slope[i]
+    intercepti<-out$intercept[i]
+    plot<-plot+geom_abline(slope=slopei, intercept=intercepti, linetype=2, colour="red")
+  }
+  plot<-plot+ ggtitle(title)+
+    geom_abline(slope=true_slope, intercept=true_intercept, linetype=1, colour="black")+
+    geom_point(size=3, pch=21, fill="darkgrey")+
+    xlab("Year")+ylab("Z-scaled response")
   return(plot)
 }
-
+#test it
+broken_stick_plot(test, window_length = 4)
 
