@@ -451,10 +451,9 @@ make_stick_pile_gif<-function(data){
   saveGIF({
     for (i in 1:length(windows)) {
       window_length_i<-windows[i]
-      print(broken_stick_plot(data, window_length = window_length_i, 
+      print(broken_stick_plot(test, window_length = window_length_i, 
                               title=paste("Window length =", window_length_i)))
     }
   }) 
 }
 make_stick_pile_gif(test)
-
