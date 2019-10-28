@@ -43,7 +43,10 @@ linefit<-function (data){
             length(unique(data$year)), #number of years the analysis includes
             summary(model)$coefficients[2,1], # slope
             summary(model)$coefficients[2,2], # se for slope
-            summary(model)$coefficients[2,4], #p value
+            summary(model)$coefficients[2,4], #p value slope
+            summary(model)$coefficients[1,1], # intercept
+            summary(model)$coefficients[1,2], # se for intercept
+            summary(model)$coefficients[1,4], # p value for intercept
             summary(model)$r.squared, #r-squared
             summary(model)$adj.r.squared) #adjusted r-squared
   return(output)
@@ -67,6 +70,9 @@ breakup<-function(data, window){ #window is the size of the window we want to us
                      slope=numeric(0), 
                      slope_se=numeric(0), 
                      p_value=numeric(0),
+                     intercept=numeric(0), 
+                     intercept_se=numeric(0), 
+                     intercept_p_value=numeric(0),
                      r_square=numeric(0),
                      adj_r_square=numeric(0))
   numyears<-length(unique(data$year))
@@ -84,7 +90,7 @@ breakup<-function(data, window){ #window is the size of the window we want to us
     numyears<-length(unique(remaining$year))
   }
   names(output)<-c("start_year", "N_data", "N_years", "slope", "slope_se", "p_value",
-                   "r_square", "adj_r_square")
+                   "intercept", "intercept_se", "intercept_p_value","r_square", "adj_r_square")
   return(output)#output the data frame
 }
 
@@ -105,6 +111,9 @@ multiple_breakups<-function(data){
                      slope=numeric(0), 
                      slope_se=numeric(0), 
                      p_value=numeric(0),
+                     intercept=numeric(0), 
+                     intercept_se=numeric(0), 
+                     intercept_p_value=numeric(0),
                      r_square=numeric(0),
                      adj_r_square=numeric(0))
   for(i in 3:(count-1)){
@@ -396,6 +405,11 @@ wrongness_plot<-function(data, significance=0.05, min_percent=95, error_multiply
   return(plot)
 }
 
+#test
+wrongness_plot(test)
+
+#now for a function that plots all the lines by window length
+
 broken_stick_plot<-function(data, title="", significance=0.05, plot_insig=TRUE, window_length=3){
   out<-multiple_breakups(data)
   years<-length(unique(out$start_year))
@@ -403,10 +417,8 @@ broken_stick_plot<-function(data, title="", significance=0.05, plot_insig=TRUE, 
   count<-nrow(out)
   #compute mean of longest series
   true_slope<-out[count,4] #find the slope of the longest series
-  #remember to convert standard error to standard deviation
-  true_error<-(out[count,5])*(sqrt(out[count, 2]))#find the error of the longest series
-  max_true<-true_slope+true_error #compute max and min values for slopes we are calling true
-  min_true<-true_slope-true_error
+  true_intercept<-(out[count,7]) #find the intercept of the longest series
+
   out$significance<-ifelse(out$p_value<significance, "YES", "NO")
   if(rsq_points==TRUE){
     point_scale<-10*out$r_square
