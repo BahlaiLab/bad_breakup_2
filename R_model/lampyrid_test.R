@@ -75,15 +75,11 @@ multiple_breakups(lampyrid_alfalfa)
 # try it with other data too
 multiple_breakups(lampyrid_notill)
 pyramid_plot(lampyrid_notill, rsq_points=TRUE)
-stability_time(lampyrid_notill)
+stability_time(lampyrid_notill, min_percent = 99, error_multiplyer = 1)
 relative_range(lampyrid_notill)
 proportion_wrong(lampyrid_notill)
 proportion_wrong_before_stability(lampyrid_notill)
 
-wrongness<-proportion_wrong_series(lampyrid_notill)
-plot(wrongness$window_length,wrongness$proportion_wrong, xlab="Window length", 
-     ylab="Proportion wrong", pch=19)
-lines(lowess(wrongness$window_length,wrongness$proportion_wrong), col="blue")
-points(wrongness$window_length,wrongness$avg_r_square, pch=17, col="orange")
-lines(lowess(wrongness$window_length,wrongness$avg_r_square), col="red")
-
+wrongness_plot(lampyrid_notill)
+broken_stick_plot(lampyrid_notill, window_length = 12)
+make_stick_pile_gif(lampyrid_notill)
