@@ -208,7 +208,7 @@ stability_time<-function(data, min_percent=95, error_multiplyer=1){#returns a nu
 }
 
 #and a test
-stability_time(test, error_multiplyer = 1.5)
+stability_time(test, error_multiplyer = 1)
 
 #now a function that finds the absoloute range of findings, and the absolute 
 #range of significant findings
