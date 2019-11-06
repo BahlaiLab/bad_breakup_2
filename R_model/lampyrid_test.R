@@ -81,5 +81,5 @@ proportion_wrong(lampyrid_notill)
 proportion_wrong_before_stability(lampyrid_notill)
 
 wrongness_plot(lampyrid_notill)
-broken_stick_plot(lampyrid_notill, window_length = 4)
+broken_stick_plot(lampyrid_notill, window_length = 3)
 make_stick_pile_gif(lampyrid_notill, significance=0.05)

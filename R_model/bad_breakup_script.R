@@ -432,7 +432,7 @@ broken_stick_plot<-function(data, title="", significance=0.05, window_length=3){
     for(i in 1:countnot){ #plot not significant windows
       slopei<-out_not$slope[i]
       intercepti<-out_not$intercept[i]
-      plot<-plot+geom_abline(slope=slopei, intercept=intercepti, linetype=3, colour="grey65")
+      plot<-plot+geom_abline(slope=slopei, intercept=intercepti, linetype=3, colour="grey12")
     }
   }
   if(countsig>0){
