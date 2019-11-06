@@ -410,7 +410,7 @@ wrongness_plot(test)
 
 #now for a function that plots all the lines by window length
 
-broken_stick_plot<-function(data, title="", significance=0.05, plot_insig=TRUE, window_length=3){
+broken_stick_plot<-function(data, title="", significance=0.05, window_length=3){
   data1<-standardize(data)#standardize data for data frame
   out<-multiple_breakups(data)
   years<-length(unique(out$start_year))
@@ -420,18 +420,30 @@ broken_stick_plot<-function(data, title="", significance=0.05, plot_insig=TRUE, 
   true_slope<-out[count,4] #find the slope of the longest series
   true_intercept<-(out[count,7]) #find the intercept of the longest series
   out<-out[which(out$N_years==window_length),] #only work with one window length per plot
-  if(plot_insig==FALSE){
-    out<-out[which(out$p_value<significance),]
-  }
-  countset<-nrow(out)#count the number of rows in the set we want to plot
+  #create a separate frame for significant and not results
+  out_sig<-out[which(out$p_value<significance),]
+  countsig<-nrow(out_sig)#count the number of rows in the set we want to plot
+  out_not<-out[which(out$p_value>significance),]
+  countnot<-nrow(out_not)#count the number of rows in the set we want to plot
   plot<- ggplot(data1, aes(x=year, y=stand.response)) +
     theme_classic()+geom_smooth(linetype=0, fill="lightblue1", method=lm, formula='y ~ x', 
                                 level=0.99)#99% confidence interval around longest series
-  for(i in 1:countset){
-    slopei<-out$slope[i]
-    intercepti<-out$intercept[i]
-    plot<-plot+geom_abline(slope=slopei, intercept=intercepti, linetype=2, colour="red")
+  if(countnot>0){
+    for(i in 1:countnot){ #plot not significant windows
+      slopei<-out_not$slope[i]
+      intercepti<-out_not$intercept[i]
+      plot<-plot+geom_abline(slope=slopei, intercept=intercepti, linetype=3, colour="grey65")
+    }
   }
+  if(countsig>0){
+    for(i in 1:countsig){ #plot significant windows
+      slopei<-out_sig$slope[i]
+      intercepti<-out_sig$intercept[i]
+      plot<-plot+geom_abline(slope=slopei, intercept=intercepti, linetype=2, colour="red")
+    }
+  }
+
+
   plot<-plot+ ggtitle(title)+
     geom_abline(slope=true_slope, intercept=true_intercept, linetype=1, colour="grey16", size=1)+
     geom_point(size=3, pch=21, fill="grey22")+
@@ -439,19 +451,19 @@ broken_stick_plot<-function(data, title="", significance=0.05, plot_insig=TRUE, 
   return(plot)
 }
 #test it
-broken_stick_plot(test, window_length = 5)
+broken_stick_plot(test, window_length = 4, significance = 0.5)
 
 #let's have a bit of fun and make an animated version of this plot
 library(animation)
 
 
-make_stick_pile_gif<-function(data){
+make_stick_pile_gif<-function(data, significance=0.05){
   out<-multiple_breakups(data)
   windows<-unique(out$N_years)#get a list of unique window lengths
   saveGIF({
     for (i in 1:length(windows)) {
       window_length_i<-windows[i]
-      print(broken_stick_plot(data, window_length = window_length_i, 
+      print(broken_stick_plot(data, significance=significance, window_length = window_length_i, 
                               title=paste("Window length =", window_length_i)))
     }
   }) 
