@@ -29,7 +29,7 @@ standardize<-function(data){
 }
 
 #try it on test data
-test1<-standardize(test)
+###test1<-standardize(test)
 #seems to be functioning
 
 # next we need a function that runs a simple linear model of x=year, y=response variable
@@ -53,7 +53,7 @@ linefit<-function (data){
 }
 
 #and try this on test data
-linefit(test1)
+###linefit(test1)
 # functional!
 
 #now we need to think about how to iterate through the dataset. We want a
@@ -95,7 +95,7 @@ breakup<-function(data, window){ #window is the size of the window we want to us
 }
 
 #and now try this on the test data
-breakup(test1, 3)
+###breakup(test1, 3)
 
 # now time to write the function that will iterate through our targetted windows
 # let's make a decision rule that our test data set must be greater than 10y in length
@@ -126,7 +126,7 @@ multiple_breakups<-function(data){
   return(out)
 }
 
-test2<-multiple_breakups(test)
+###test2<-multiple_breakups(test)
 #fan-flipping-tastic! it looks like that works
 
 
@@ -172,7 +172,7 @@ pyramid_plot<- function(data, title="", significance=0.05, plot_insig=TRUE, rsq_
   return(plot)
 }
 
-pyramid_plot(test, title="test plot", plot_insig = TRUE, significance=0.05, rsq_points =TRUE)
+###pyramid_plot(test, title="test plot", plot_insig = TRUE, significance=0.05, rsq_points =TRUE)
 
 
 
@@ -208,7 +208,7 @@ stability_time<-function(data, min_percent=95, error_multiplyer=1){#returns a nu
 }
 
 #and a test
-stability_time(test, error_multiplyer = 1)
+###stability_time(test, error_multiplyer = 1)
 
 #now a function that finds the absoloute range of findings, and the absolute 
 #range of significant findings
@@ -228,7 +228,7 @@ abs_range<- function(data, only_significant=FALSE, significance=0.05){#returns a
 }
 
 #and try it out
-abs_range(test, only_significant = FALSE, significance = 0.05)
+###abs_range(test, only_significant = FALSE, significance = 0.05)
 
 #now we want to find the absolute over and under estimate compared to the slope of the 
 #longest series
@@ -249,7 +249,7 @@ relative_range<- function(data, only_significant=FALSE, significance=0.05){#retu
   
 }
 
-relative_range(test, only_significant = FALSE, significance = 0.05)
+###relative_range(test, only_significant = FALSE, significance = 0.05)
 
 #proportion significant- finds the proportion of total windows with statistically significant values
 
@@ -263,7 +263,7 @@ proportion_significant<- function(data, significance=0.05){#returns a single val
   
 }
 
-proportion_significant(test, significance=0.05)
+###proportion_significant(test, significance=0.05)
 
 #proportion significantly wrong- we're going to define this as 'directionally wrong'
 #where there is a significant relationship that does not match the direction of the true slope
@@ -290,7 +290,7 @@ proportion_wrong<- function(data, significance=0.05){#returns a single value bet
   
 }
 
-proportion_wrong(test, significance=0.01)
+###proportion_wrong(test, significance=0.01)
 
 
 
@@ -339,7 +339,7 @@ proportion_wrong_series<- function(data, significance=0.05){#returns a single va
 
 
 #test it
-proportion_wrong_series(test, significance = 0.1)
+###proportion_wrong_series(test, significance = 0.1)
 
 #proportion significantly wrong under stability time- we're going to define this as 'directionally wrong'
 #where there is a significant relationship that does not match the direction of the true slope
@@ -371,7 +371,7 @@ proportion_wrong_before_stability<- function(data, significance=0.05, min_percen
   
 }
 
-proportion_wrong_before_stability(test, significance=0.05)
+###proportion_wrong_before_stability(test, significance=0.05)
 
 #implement another charting function that gives the proportion wrong by window length
 
@@ -406,7 +406,7 @@ wrongness_plot<-function(data, significance=0.05, min_percent=95, error_multiply
 }
 
 #test
-wrongness_plot(test)
+###wrongness_plot(test)
 
 #now for a function that plots all the lines by window length
 
@@ -451,7 +451,7 @@ broken_stick_plot<-function(data, title="", significance=0.05, window_length=3){
   return(plot)
 }
 #test it
-broken_stick_plot(test, window_length = 4, significance = 0.5)
+###broken_stick_plot(test, window_length = 4, significance = 0.5)
 
 #let's have a bit of fun and make an animated version of this plot
 library(animation)
@@ -468,4 +468,4 @@ make_stick_pile_gif<-function(data, significance=0.05){
     }
   }) 
 }
-make_stick_pile_gif(test)
+###make_stick_pile_gif(test)
