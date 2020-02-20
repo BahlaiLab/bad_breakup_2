@@ -9,6 +9,37 @@
 #use this test data set to build stuff
 test<-read.csv(file="https://raw.githubusercontent.com/BahlaiLab/bad_breakup_2/master/R_model/test.csv", header=TRUE)
 
+#######################
+#make sure required packages are installed
+
+#we need ggplot2, animation
+
+if(require("ggplot2")){
+  print("done")
+} else {
+  print("trying to install ggplot2")
+  install.packages("ggplot2")
+  if(require(ggplot2)){
+    print("ggplot2 installed and loaded")
+  } else {
+    stop("could not install ggplot2")
+  }
+}
+if(require("animation")){
+  print("done")
+} else {
+  print("trying to install animation")
+  install.packages("animation")
+  if(require(animation)){
+    print("animation installed and loaded")
+  } else {
+    stop("could not install animation")
+  }
+}
+
+
+#######################
+
 # set it so we get our decimal places rather than sci notation in our outputs
 options(scipen=10)
 
