@@ -22,7 +22,7 @@ if(require("ggplot2")){
   if(require(ggplot2)){
     print("ggplot2 installed and loaded")
   } else {
-    stop("could not install ggplot2")
+    stop("could not install package ggplot2")
   }
 }
 if(require("animation")){
@@ -33,7 +33,7 @@ if(require("animation")){
   if(require(animation)){
     print("animation installed and loaded")
   } else {
-    stop("could not install animation")
+    stop("could not install package animation")
   }
 }
 
@@ -147,13 +147,11 @@ multiple_breakups<-function(data){
                      intercept_p_value=numeric(0),
                      r_square=numeric(0),
                      adj_r_square=numeric(0))
-  for(i in 3:(count-1)){
+  for(i in 3:(count)){
     outeach<-breakup(data1, i) #fit at each window length
     output<-rbind(output, outeach)#bind it to the frame
   }
-  
-  outall<-linefit(data1) #fit a line to the complete data set too
-  out<-rbind(output, outall)
+  out<-output
   return(out)
 }
 
