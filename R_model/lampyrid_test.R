@@ -60,26 +60,33 @@ lampyrid_summary$ADULTS<-NULL
 lampyrid_summary$TRAPS<-NULL
 
 # pull out relevant treatments, create a data frame for each
-lampyrid_alfalfa<-subset(lampyrid_summary, TREAT_DESC=="Alfalfa")
-lampyrid_notill<-subset(lampyrid_summary, TREAT_DESC=="No till")
+lampyrid_es<-subset(lampyrid_summary, TREAT_DESC=="Early successional")
 
 #get rid of data that isn't needed for our analysis
-lampyrid_alfalfa$TREAT_DESC<-NULL
-lampyrid_notill$TREAT_DESC<-NULL
+lampyrid_es$TREAT_DESC<-NULL
 
 #ok, these data frames should be ready to go
 
 #here goes nothing
-multiple_breakups(lampyrid_alfalfa)
-# there are some perculiarities because 2007 is missing, but I think we're working now.
-# try it with other data too
-multiple_breakups(lampyrid_notill)
-pyramid_plot(lampyrid_notill, rsq_points=TRUE)
-stability_time(lampyrid_notill, min_percent = 99, error_multiplyer = 1)
-relative_range(lampyrid_notill)
-proportion_wrong(lampyrid_notill)
-proportion_wrong_before_stability(lampyrid_notill)
 
-wrongness_plot(lampyrid_notill)
-broken_stick_plot(lampyrid_notill, window_length = 3)
-make_stick_pile_gif(lampyrid_notill, significance=0.05)
+output_frame<-multiple_breakups(lampyrid_es)
+output_frame
+pyramid_plot(lampyrid_es, rsq_points=TRUE)
+stability_time(lampyrid_es, min_percent = 95, error_multiplyer = 1)
+relative_range(lampyrid_es)
+proportion_significant(lampyrid_es)
+proportion_wrong(lampyrid_es)
+proportion_wrong_before_stability(lampyrid_es)
+
+wrongness_plot(lampyrid_es)
+broken_stick_plot(lampyrid_es, window_length = 3)
+broken_stick_plot(lampyrid_es, window_length = 4)
+broken_stick_plot(lampyrid_es, window_length = 5)
+broken_stick_plot(lampyrid_es, window_length = 6)
+broken_stick_plot(lampyrid_es, window_length = 7)
+broken_stick_plot(lampyrid_es, window_length = 8)
+broken_stick_plot(lampyrid_es, window_length = 9)
+broken_stick_plot(lampyrid_es, window_length = 10)
+broken_stick_plot(lampyrid_es, window_length = 11)
+
+
