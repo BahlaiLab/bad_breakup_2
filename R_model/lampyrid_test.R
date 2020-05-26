@@ -74,6 +74,7 @@ output_frame
 pyramid_plot(lampyrid_es, rsq_points=TRUE)
 stability_time(lampyrid_es, min_percent = 95, error_multiplyer = 1)
 relative_range(lampyrid_es)
+relative_range_after_stability(lampyrid_es)
 proportion_significant(lampyrid_es)
 proportion_wrong(lampyrid_es)
 proportion_wrong_before_stability(lampyrid_es)
