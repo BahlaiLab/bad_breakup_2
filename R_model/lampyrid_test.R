@@ -93,24 +93,27 @@ broken_stick_plot(lampyrid_es, window_length = 11)
 
 #making figures for the paper
 
+library(gridExtra)
+
 #figure1 is made in excel. Don't judge
 
 #figure 2 is adapted from Hermann et al 2016
 
 #get averages by treatment
 
-lampyrid_summary1<-dcast(lampyrid_summary, year+TREAT_DESC~, value.var="pertrap", mean)
+lampyrid_summary1<-dcast(lampyrid_summary, year+TREAT_DESC~., value.var="pertrap", mean)
 names(lampyrid_summary1)[3]<-"pertrap"
 
 #panel 1 with complete dataset
 lampyrid.summary.treatment<-ggplot(lampyrid_summary1, aes(year, pertrap, 
                                                               fill=as.factor(TREAT_DESC)))+
   scale_fill_brewer(palette="Set3")+
-  geom_smooth(aes(year, pertrap, fill=NULL), colour="black", se=TRUE)+
+  geom_smooth(aes(year, pertrap, fill=NULL), method="loess", colour="black", se=F)+
   geom_point(colour="black", pch=21, size=4)+
   theme_bw(base_size = 20)+
   guides(fill=guide_legend(title="Treatment"))+
-  theme(legend.key=element_blank())+
+  theme(legend.key=element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  ylim(0, 4)+
   xlab("\nYear")+
   ylab("Adults per trap\n")
 lampyrid.summary.treatment
@@ -123,18 +126,88 @@ lampyrid11_14<-lampyrid_summary1[which(as.numeric(lampyrid_summary1$year)>=2011&
 lampyrid.summary.treatment.subset<-ggplot(lampyrid11_14, aes(year, pertrap, 
                                                           fill=as.factor(TREAT_DESC)))+
   scale_fill_brewer(palette="Set3")+
-  geom_smooth(aes(year, pertrap, fill=NULL), method="lm", colour="black", se=TRUE)+
+  geom_smooth(aes(year, pertrap, fill=NULL), method="lm", colour="black", se=F)+
   geom_point(colour="black", pch=21, size=4)+
   theme_bw(base_size = 20)+
   guides(fill=guide_legend(title="Treatment"))+
-  theme(legend.key=element_blank())+
+  theme(legend.key=element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank() )+
+  ylim(0, 4)+
   xlab("\nYear")+
   ylab("Adults per trap\n")
 lampyrid.summary.treatment.subset
 
+#remove legend from panel A, add label
+lampyrid.summary.treatment1<-lampyrid.summary.treatment+guides(fill=FALSE)+
+  annotate("text", x=2004.6, y=3.9, label="A", size=12)
+#remove Y axis title from panel B, add label
+lampyrid.summary.treatment.subset1<-lampyrid.summary.treatment.subset+ylab(NULL)+
+  annotate("text", x=2011.2, y=3.9, label="B", size=11)
+#stack it together
+grid.arrange(arrangeGrob(lampyrid.summary.treatment1, 
+                         lampyrid.summary.treatment.subset1, 
+                         ncol=2, widths=c(0.35, 0.55)))
+
+
 #save to pdf
-pdf("figure2.pdf", height=6, width=8)
-lampyrid.summary.treatment
+pdf("figures/figure2.pdf", height=5, width=10)
+grid.arrange(arrangeGrob(lampyrid.summary.treatment1, 
+                         lampyrid.summary.treatment.subset1, 
+                         ncol=2, widths=c(0.355, 0.55)))
+dev.off()
+
+#figure 3 is the pyramid plot
+
+pyramid<-pyramid_plot(lampyrid_es, rsq_points=TRUE)+theme_bw(base_size = 18)+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+
+pdf("figures/figure3.pdf", height=5, width=6)
+pyramid
 dev.off()
 
 
+
+#figure 4 is the wrongness plot
+
+wrongness<-wrongness_plot(lampyrid_es)+theme_bw(base_size = 18)+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+
+pdf("figures/figure4.pdf", height=5, width=7)
+wrongness
+dev.off()
+
+
+#figure 5 is the multipanel broken stick plot
+
+stick3<-broken_stick_plot(lampyrid_es, window_length = 3)+ylab(NULL)+xlab(NULL)+
+  annotate("text", x=2005.5, y=3.9, label="3 year", size=5)
+stick4<-broken_stick_plot(lampyrid_es, window_length = 4)+ylab(NULL)+xlab(NULL)+
+  annotate("text", x=2005.5, y=3.9, label="4 year", size=5)
+stick5<-broken_stick_plot(lampyrid_es, window_length = 5)+ylab(NULL)+xlab(NULL)+
+  annotate("text", x=2005.5, y=3.9, label="5 year", size=5)
+stick6<-broken_stick_plot(lampyrid_es, window_length = 6)+ylab(NULL)+xlab(NULL)+
+  annotate("text", x=2005.5, y=3.9, label="6 year", size=5)
+stick7<-broken_stick_plot(lampyrid_es, window_length = 7)+ylab(NULL)+xlab(NULL)+
+  annotate("text", x=2005.5, y=3.9, label="7 year", size=5)
+stick8<-broken_stick_plot(lampyrid_es, window_length = 8)+ylab(NULL)+xlab(NULL)+
+  annotate("text", x=2005.5, y=3.9, label="8 year", size=5)
+stick9<-broken_stick_plot(lampyrid_es, window_length = 9)+ylab(NULL)+xlab(NULL)+
+  annotate("text", x=2005.5, y=3.9, label="9 year", size=5)
+stick10<-broken_stick_plot(lampyrid_es, window_length = 10)+ylab(NULL)+xlab(NULL)+
+  annotate("text", x=2005.5, y=3.9, label="10 year", size=5)
+stick11<-broken_stick_plot(lampyrid_es, window_length = 11)+ylab(NULL)+xlab(NULL)+
+  annotate("text", x=2005.5, y=3.9, label="11 year", size=5)
+
+
+grid.arrange(arrangeGrob(stick3, stick4, stick5, stick6, stick7, stick8, stick9,
+                         stick10, stick11, 
+                         ncol=3, widths=c(0.5, 0.5, 0.5)),
+             left="Z-scaled response", bottom="Year")
+
+
+pdf("figures/figure5.pdf", height=7, width=8)
+grid.arrange(arrangeGrob(stick3, stick4, stick5, stick6, stick7, stick8, stick9,
+                         stick10, stick11, 
+                         ncol=3, widths=c(0.5, 0.5, 0.5)),
+             left="Z-scaled response", bottom="Year")
+
+dev.off()
