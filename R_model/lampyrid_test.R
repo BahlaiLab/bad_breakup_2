@@ -91,3 +91,12 @@ broken_stick_plot(lampyrid_es, window_length = 10)
 broken_stick_plot(lampyrid_es, window_length = 11)
 
 
+#making figures for the paper
+
+#figure1 is made in excel. Don't judge
+
+#figure 2 is adapted from Hermann et al 2016
+
+
+
+
