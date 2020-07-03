@@ -97,6 +97,44 @@ broken_stick_plot(lampyrid_es, window_length = 11)
 
 #figure 2 is adapted from Hermann et al 2016
 
+#get averages by treatment
 
+lampyrid_summary1<-dcast(lampyrid_summary, year+TREAT_DESC~, value.var="pertrap", mean)
+names(lampyrid_summary1)[3]<-"pertrap"
+
+#panel 1 with complete dataset
+lampyrid.summary.treatment<-ggplot(lampyrid_summary1, aes(year, pertrap, 
+                                                              fill=as.factor(TREAT_DESC)))+
+  scale_fill_brewer(palette="Set3")+
+  geom_smooth(aes(year, pertrap, fill=NULL), colour="black", se=TRUE)+
+  geom_point(colour="black", pch=21, size=4)+
+  theme_bw(base_size = 20)+
+  guides(fill=guide_legend(title="Treatment"))+
+  theme(legend.key=element_blank())+
+  xlab("\nYear")+
+  ylab("Adults per trap\n")
+lampyrid.summary.treatment
+
+#panel with four year window
+#pull out 2011 to 2014 data
+lampyrid11_14<-lampyrid_summary1[which(as.numeric(lampyrid_summary1$year)>=2011& 
+                                        as.numeric(lampyrid_summary1$year)<=2014),]
+
+lampyrid.summary.treatment.subset<-ggplot(lampyrid11_14, aes(year, pertrap, 
+                                                          fill=as.factor(TREAT_DESC)))+
+  scale_fill_brewer(palette="Set3")+
+  geom_smooth(aes(year, pertrap, fill=NULL), method="lm", colour="black", se=TRUE)+
+  geom_point(colour="black", pch=21, size=4)+
+  theme_bw(base_size = 20)+
+  guides(fill=guide_legend(title="Treatment"))+
+  theme(legend.key=element_blank())+
+  xlab("\nYear")+
+  ylab("Adults per trap\n")
+lampyrid.summary.treatment.subset
+
+#save to pdf
+pdf("figure2.pdf", height=6, width=8)
+lampyrid.summary.treatment
+dev.off()
 
 
