@@ -211,3 +211,71 @@ grid.arrange(arrangeGrob(stick3, stick4, stick5, stick6, stick7, stick8, stick9,
              left="Z-scaled response", bottom="Year")
 
 dev.off()
+
+
+
+#Simplified figure 2 for NSF CAREER
+
+#get averagesper rep by treatment
+
+lampyrid_summary1<-lampyrid2
+lampyrid_summary1$TRAPS<-lampyrid3$TRAPS
+
+#create a new variable to account for trapping effort in a given year
+lampyrid_summary1$pertrap<-lampyrid_summary1$ADULTS/lampyrid_summary1$TRAPS
+
+lampyrid_summary2<-dcast(lampyrid_summary1, year+TREAT_DESC+REPLICATE~., value.var="pertrap", mean)
+names(lampyrid_summary2)[3]<-"pertrap"
+
+lampyrid_summary3<-subset(lampyrid_summary1, TREAT_DESC=="Early successional")
+
+#panel 1 with complete dataset
+lampyrid.summary.treatment<-ggplot(lampyrid_summary3, aes(year, pertrap))+
+  geom_smooth( method="loess", span=0.5, colour="black", se=F)+
+  geom_point(colour="black", pch=21, size=4)+
+  theme_bw(base_size = 20)+
+  guides(fill=guide_legend(title="Treatment"))+
+  theme(legend.key=element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  ylim(0, 2)+
+  xlab("\nYear")+
+  ylab("Adults per trap\n")
+lampyrid.summary.treatment
+
+#panel with four year window
+#pull out 2011 to 2014 data
+lampyrid05_08<-lampyrid_summary3[which(as.numeric(lampyrid_summary3$year)>=2005& 
+                                         as.numeric(lampyrid_summary3$year)<=2008),]
+
+lampyrid.summary.treatment.subset<-ggplot(lampyrid05_08, aes(year, pertrap))+
+  geom_smooth(aes(year, pertrap), method="lm", colour="black", se=F)+
+  geom_point(colour="black", pch=21, size=4)+
+  theme_bw(base_size = 20)+
+  guides(fill=guide_legend(title="Treatment"))+
+  theme(legend.key=element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank() )+
+  ylim(0, 2)+
+  xlab("\nYear")+
+  ylab("Adults per trap\n")
+lampyrid.summary.treatment.subset
+
+#remove legend from panel A, add label
+lampyrid.summary.treatment1<-lampyrid.summary.treatment+guides(fill=FALSE)+
+  annotate("text", x=2004.6, y=1.95, label="A", size=12)
+#remove Y axis title from panel B, add label
+lampyrid.summary.treatment.subset1<-lampyrid.summary.treatment.subset+ylab(NULL)+
+  annotate("text", x=2005.2, y=1.95, label="B", size=11)
+#stack it together
+grid.arrange(arrangeGrob(lampyrid.summary.treatment1, 
+                         lampyrid.summary.treatment.subset1, 
+                         ncol=2, widths=c(0.55, 0.5)))
+
+#get slope and stats for each panel
+
+summary(lm(pertrap~year, data=lampyrid_summary3))
+summary(lm(pertrap~year, data=lampyrid05_08))
+
+#save to pdf
+pdf("figures/figure2.pdf", height=5, width=10)
+grid.arrange(arrangeGrob(lampyrid.summary.treatment1, 
+                         lampyrid.summary.treatment.subset1, 
+                         ncol=2, widths=c(0.355, 0.55)))
+dev.off()
