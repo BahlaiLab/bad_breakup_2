@@ -277,5 +277,5 @@ summary(lm(pertrap~year, data=lampyrid05_08))
 pdf("figures/figure2.pdf", height=5, width=10)
 grid.arrange(arrangeGrob(lampyrid.summary.treatment1, 
                          lampyrid.summary.treatment.subset1, 
-                         ncol=2, widths=c(0.355, 0.55)))
+                         ncol=2, widths=c(0.55, 0.55)))
 dev.off()
