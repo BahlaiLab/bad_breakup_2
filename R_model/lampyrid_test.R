@@ -262,7 +262,7 @@ lampyrid.summary.treatment1<-lampyrid.summary.treatment+guides(fill=FALSE)+
   annotate("text", x=2004.6, y=1.95, label="A", size=12)
 #remove Y axis title from panel B, add label
 lampyrid.summary.treatment.subset1<-lampyrid.summary.treatment.subset+ylab(NULL)+
-  annotate("text", x=2005.2, y=1.95, label="B", size=11)
+  annotate("text", x=2005.2, y=1.95, label="B", size=12)
 #stack it together
 grid.arrange(arrangeGrob(lampyrid.summary.treatment1, 
                          lampyrid.summary.treatment.subset1, 
@@ -278,4 +278,22 @@ pdf("figures/figure2.pdf", height=5, width=10)
 grid.arrange(arrangeGrob(lampyrid.summary.treatment1, 
                          lampyrid.summary.treatment.subset1, 
                          ncol=2, widths=c(0.55, 0.55)))
+dev.off()
+
+#combine figs 3 and 4 for submission
+
+#figure 3A
+
+pyramid.1<-pyramid+annotate("text", x=11.8, y=-1.3, label="A", size=11)
+
+
+
+#figure 3B
+
+wrongness.1<-wrongness+annotate("text", x=3.3, y=0.97, label="B", size=11)
+
+pdf("figures/figure3AB.pdf", height=5, width=13)
+grid.arrange(arrangeGrob(pyramid.1, 
+                         wrongness.1, 
+                         ncol=2, widths=c(0.5, 0.5)))
 dev.off()
