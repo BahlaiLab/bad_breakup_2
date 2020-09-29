@@ -149,20 +149,20 @@ grid.arrange(arrangeGrob(lampyrid.summary.treatment1,
 
 
 #save to pdf
-pdf("figures/figure2.pdf", height=5, width=10)
-grid.arrange(arrangeGrob(lampyrid.summary.treatment1, 
-                         lampyrid.summary.treatment.subset1, 
-                         ncol=2, widths=c(0.355, 0.55)))
-dev.off()
+# pdf("figures/figure2.pdf", height=5, width=10)
+# grid.arrange(arrangeGrob(lampyrid.summary.treatment1, 
+#                          lampyrid.summary.treatment.subset1, 
+#                          ncol=2, widths=c(0.355, 0.55)))
+# dev.off()
 
 #figure 3 is the pyramid plot
 
 pyramid<-pyramid_plot(lampyrid_es, rsq_points=TRUE)+theme_bw(base_size = 18)+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
-
-pdf("figures/figure3.pdf", height=5, width=6)
-pyramid
-dev.off()
+# 
+# pdf("figures/figure3.pdf", height=5, width=6)
+# pyramid
+# dev.off()
 
 
 
@@ -171,9 +171,9 @@ dev.off()
 wrongness<-wrongness_plot(lampyrid_es)+theme_bw(base_size = 18)+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
 
-pdf("figures/figure4.pdf", height=5, width=7)
-wrongness
-dev.off()
+# pdf("figures/figure4.pdf", height=5, width=7)
+# wrongness
+# dev.off()
 
 
 #figure 5 is the multipanel broken stick plot
@@ -204,7 +204,7 @@ grid.arrange(arrangeGrob(stick3, stick4, stick5, stick6, stick7, stick8, stick9,
              left="Z-scaled response", bottom="Year")
 
 
-pdf("figures/figure5.pdf", height=7, width=8)
+pdf("figures/figure3.pdf", height=7, width=8)
 grid.arrange(arrangeGrob(stick3, stick4, stick5, stick6, stick7, stick8, stick9,
                          stick10, stick11, 
                          ncol=3, widths=c(0.5, 0.5, 0.5)),
@@ -214,7 +214,7 @@ dev.off()
 
 
 
-#Simplified figure 2 for NSF CAREER
+#Simplified figure 1
 
 #get averagesper rep by treatment
 
@@ -274,7 +274,7 @@ summary(lm(pertrap~year, data=lampyrid_summary3))
 summary(lm(pertrap~year, data=lampyrid05_08))
 
 #save to pdf
-pdf("figures/figure2.pdf", height=5, width=10)
+pdf("figures/figure1.pdf", height=5, width=10)
 grid.arrange(arrangeGrob(lampyrid.summary.treatment1, 
                          lampyrid.summary.treatment.subset1, 
                          ncol=2, widths=c(0.55, 0.55)))
@@ -282,17 +282,17 @@ dev.off()
 
 #combine figs 3 and 4 for submission
 
-#figure 3A
+#figure 2A
 
 pyramid.1<-pyramid+annotate("text", x=11.8, y=-1.3, label="A", size=11)
 
 
 
-#figure 3B
+#figure 2B
 
 wrongness.1<-wrongness+annotate("text", x=3.3, y=0.97, label="B", size=11)
 
-pdf("figures/figure3AB.pdf", height=5, width=13)
+pdf("figures/figure2.pdf", height=5, width=13)
 grid.arrange(arrangeGrob(pyramid.1, 
                          wrongness.1, 
                          ncol=2, widths=c(0.5, 0.5)))
