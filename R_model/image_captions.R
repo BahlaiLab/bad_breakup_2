@@ -16,3 +16,5 @@ relative_range_after_stability([data])
 proportion_significant([data])
 proportion_wrong([data])
 proportion_wrong_before_stability([data])
+
+#other functions- abs_range, proportion_wrong_series, broken_stick_plot
